@@ -62,6 +62,9 @@ function addAqiData() {
     }else if(!airVal.match(/^\d+$/)) {
         alert("空气质量指数必须为整数！");
         chk = false;
+    }else if(aqiData[cityVal]) {
+        alert("城市名已存在！");
+        chk = false;
     }else{
         chk = true;
     }
