@@ -1,0 +1,135 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>IFE JavaScript Task 01</title>
+        <style>
+            body {font:12px/15px normal 'Microsoft Yahei';}
+            table {border-collapse: collapse; margin-top:20px; width:100%;}
+            table td {border: 1px solid #000; padding:5px 10px; font-size: 12px; text-align: center;}
+        </style>
+    </head>
+<body>
+
+    <div>
+        <label>城市名称：<input id="aqi-city-input" type="text"></label>
+        <label>空气质量指数：<input id="aqi-value-input" type="text"></label>
+        <button id="add-btn">确认添加</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <td>城市</td>
+                <td>空气质量</td>
+                <td>操作</td>
+            </tr>
+        </thead>
+        <tbody id="aqi-table">
+        </tbody>
+    <!--
+        <tr>
+            <td>北京</td>
+            <td>90</td>
+            <td><button>删除</button></td>
+        </tr>
+        <tr>
+            <td>北京</td>
+            <td>90</td>
+            <td><button>删除</button></td>
+        </tr>
+     -->
+    </table>
+
+
+
+<script>
+
+var datatable = document.getElementById('aqi-table');
+var btnAdd = document.getElementById('add-btn');
+var aqiData = {};
+var cityInput = document.getElementById('aqi-city-input');
+var airInput = document.getElementById('aqi-value-input');
+var cityVal = '';
+var airVal = '';
+var chk = true;
+
+function addAqiData() {
+    cityVal = cityInput.value.trim();
+    airVal = airInput.value.trim();
+    if(!cityVal.match(/^[A-Za-z\u4E00-\u9FA5]+$/)){
+        alert("城市名必须为中文或英文字符！");
+        chk = false;
+    }else if(!airVal.match(/^\d+$/)) {
+        alert("空气质量指数必须为整数！");
+        chk = false;
+    }else{
+        chk = true;
+    }
+
+    if (chk) {
+        aqiData[cityVal] = airVal;
+    }
+}
+
+function renderAqiList() {
+
+    var r = datatable.insertRow();
+    var c1=r.insertCell(0);
+    var c2=r.insertCell(1);
+    var c3=r.insertCell(2);
+
+    c1.innerHTML=cityVal;
+    c2.innerHTML=airVal;
+    c3.innerHTML='<button data-city='+cityVal+'>删除</button>';
+
+    /*var newRow = document.createElement("tr");
+    var c1 = document.createElement("td");
+    var c2 = document.createElement("td");
+    var c3 = document.createElement("td");
+    var btn = document.createElement("button");
+
+    c1.textContent = cityVal;
+    c2.textContent = airVal;
+    btn.textContent = '删除';
+    btn.dataset.city = cityVal;
+
+    c3.appendChild(btn);
+    newRow.appendChild(c1);
+    newRow.appendChild(c2);
+    newRow.appendChild(c3);
+    datatable.appendChild(newRow);*/
+}
+
+function addBtnHandle() {
+    addAqiData();
+    //console.log(chk);
+    if (chk) {
+        renderAqiList();
+    }
+}
+
+function delBtnHandle(cityName,rowIndexVal) {
+    console.log(aqiData);
+    delete aqiData[cityName];
+    console.log(aqiData);
+    datatable.deleteRow(rowIndexVal);
+}
+
+function init() {
+    // 在这下面给add-btn绑定一个点击事件，点击时触发addBtnHandle函数
+    btnAdd.addEventListener('click',addBtnHandle);
+
+    // 想办法给aqi-table中的所有删除按钮绑定事件，触发delBtnHandle函数
+    datatable.addEventListener("click", function(event){
+        var theBtn = event.target;
+        if(theBtn.nodeName.toLowerCase() === 'button'){
+            delBtnHandle(theBtn.dataset.city, theBtn.parentElement.parentElement.rowIndex-1);
+        }
+    })
+}
+
+init();
+
+</script>
+</body>
+</html>
